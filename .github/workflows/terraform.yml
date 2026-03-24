@@ -93,3 +93,9 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
+      - name: Deploy Function App
+        uses: Azure/functions-action@v1
+        with:
+          app-name: func-product-pj8x7
+          package: apis/product-api
+
