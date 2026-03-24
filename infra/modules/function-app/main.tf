@@ -24,3 +24,24 @@ resource "azurerm_linux_function_app" "func" {
 
   site_config {}
 }
+
+# Application Insights
+resource "azurerm_application_insights" "app_insights" {
+  name                = "${var.name}-ai"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  application_type    = "web"
+
+  lifecycle {
+    ignore_changes = [workspace_id]
+  }
+}
+
+
+output "function_name" {
+  value = azurerm_linux_function_app.func.name
+}
+
+output "application_insights_key" {
+  value = azurerm_application_insights.app_insights.instrumentation_key
+}
