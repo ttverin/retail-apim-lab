@@ -20,13 +20,19 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Install dependencies
+      - name: Clean install
         run: |
           cd apis/product-api
-          npm install
+          rm -rf node_modules
+          npm install --production
+
+      - name: Zip function app
+        run: |
+          cd apis/product-api
+          zip -r ../../function.zip .
 
       - name: Deploy Function App
         uses: Azure/functions-action@v1
         with:
           app-name: func-product-pj8x7
-          package: ./apis/product-api
+          package: function.zip

@@ -4,17 +4,16 @@ app.http("productApi", {
     methods: ["GET"],
     authLevel: "anonymous",
     handler: async (request, context) => {
-
-        const products = [
-            { id: 1, name: "Laptop", price: 1200 },
-            { id: 2, name: "Phone", price: 800 }
-        ];
+        context.log("Product API triggered");
 
         return {
             status: 200,
             jsonBody: {
                 message: "Products retrieved successfully",
-                data: products
+                data: [
+                    { id: 1, name: "Laptop", price: 1200 },
+                    { id: 2, name: "Phone", price: 800 }
+                ]
             }
         };
     }
