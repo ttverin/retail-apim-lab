@@ -1,0 +1,20 @@
+<policies>
+    <inbound>
+        <base />
+
+        <!-- Route to backend -->
+        <set-backend-service base-url="https://httpbin.org/get" />
+    </inbound>
+
+    <outbound>
+        <base />
+
+        <!-- Transform response -->
+        <set-body template="liquid">
+            {
+            "message": "Response transformed by APIM",
+            "data": {{body | json}}
+            }
+        </set-body>
+    </outbound>
+</policies>
