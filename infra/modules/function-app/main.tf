@@ -23,6 +23,12 @@ resource "azurerm_linux_function_app" "func" {
   storage_account_access_key = azurerm_storage_account.sa.primary_access_key
 
   site_config {}
+
+  app_settings = {
+    FUNCTIONS_WORKER_RUNTIME = "node"
+    APPINSIGHTS_INSTRUMENTATIONKEY = azurerm_application_insights.app_insights.instrumentation_key
+    APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.app_insights.connection_string
+  }
 }
 
 # Application Insights
