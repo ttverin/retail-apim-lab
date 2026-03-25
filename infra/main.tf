@@ -32,7 +32,7 @@ module "product_api" {
   apim_name           = module.apim.apim_name
   resource_group_name = module.rg.name
   service_url         = module.product_function.url
-  policy_file       = "${path.module}/policies/product.xml"
+  policy_file         = "${path.module}/policies/product.xml"
 }
 
 # Legacy backend (external system)
