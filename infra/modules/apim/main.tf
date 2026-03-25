@@ -27,7 +27,7 @@ resource "azurerm_api_management_api_operation" "get_products" {
   resource_group_name = var.resource_group_name
   display_name = "Get Products"
   method       = "GET"
-  url_template = "/"
+  url_template = "/products"
 }
 
 
