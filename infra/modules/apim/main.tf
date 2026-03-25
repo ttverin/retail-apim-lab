@@ -17,7 +17,6 @@ resource "azurerm_api_management_api" "product_api" {
   display_name        = "Product API"
   path                = "products"
   protocols           = ["https"]
-  service_url         = var.service_url
 }
 
 resource "azurerm_api_management_api_operation" "get_products" {
