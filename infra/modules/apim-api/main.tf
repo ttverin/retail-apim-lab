@@ -20,3 +20,23 @@ resource "azurerm_api_management_api_policy" "policy" {
 
   xml_content = file(var.policy_file)
 }
+
+resource "azurerm_api_management_api" "product_api" {
+  name                = "product-api"
+  resource_group_name = var.resource_group_name
+  api_management_name = var.apim_name
+  revision            = "1"
+  display_name        = "Product API"
+  path                = "products"
+  protocols           = ["https"]
+}
+
+resource "azurerm_api_management_api" "legacy_api" {
+  name                = "legacy-product-api"
+  resource_group_name = var.resource_group_name
+  api_management_name = var.apim_name
+  revision            = "1"
+  display_name        = "Legacy Product API"
+  path                = "legacy"
+  protocols           = ["https"]
+}
