@@ -1,7 +1,7 @@
 resource "azurerm_api_management_api_operation" "get_products" {
   operation_id        = "get-products"
-  api_name            = azurerm_api_management_api.product_api.name
-  api_management_name = var.apim_name
+  api_name            = module.product_api.api_name
+  api_management_name = module.apim.apim_name
   resource_group_name = var.resource_group_name
   display_name        = "Get Products"
   method              = "GET"
@@ -10,15 +10,15 @@ resource "azurerm_api_management_api_operation" "get_products" {
 
 resource "azurerm_api_management_api_operation_policy" "get_products_policy" {
   operation_id        = azurerm_api_management_api_operation.get_products.operation_id
-  api_name            = azurerm_api_management_api.product_api.name
-  api_management_name = var.apim_name
+  api_name            = module.product_api.api_name
+  api_management_name = module.apim.apim_name
   resource_group_name = var.resource_group_name
   xml_content         = <<XML
 <policies>
   <inbound>
     <base />
     <rewrite-uri template="/api/productApi" />
-    <set-backend-service base-url="https://${var.function_app_name}.azurewebsites.net" />
+    <set-backend-service base-url="https://${module.product_function.function_app_name}.azurewebsites.net" />
   </inbound>
   <backend>
     <base />
@@ -32,8 +32,8 @@ XML
 
 resource "azurerm_api_management_api_operation" "legacy_get_products" {
   operation_id        = "legacy-get-products"
-  api_name            = azurerm_api_management_api.legacy_api.name
-  api_management_name = var.apim_name
+  api_name            = module.legacy_api.api_name
+  api_management_name = module.apim.apim_name
   resource_group_name = var.resource_group_name
 
   display_name = "Legacy Get Products"
@@ -43,8 +43,8 @@ resource "azurerm_api_management_api_operation" "legacy_get_products" {
 
 resource "azurerm_api_management_api_operation_policy" "legacy_policy" {
   operation_id        = azurerm_api_management_api_operation.legacy_get_products.operation_id
-  api_name            = azurerm_api_management_api.legacy_api.name
-  api_management_name = var.apim_name
+  api_name            = module.legacy_api.api_name
+  api_management_name = module.apim.apim_name
   resource_group_name = var.resource_group_name
 
   xml_content = <<XML
