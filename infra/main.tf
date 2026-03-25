@@ -29,11 +29,13 @@ module "product_api" {
   source              = "./modules/apim-api"
   api_name            = "product-api"
   path                = "products"
-  apim_name           = module.apim.name
+  apim_name           = module.apim.apim_name
   resource_group_name = module.rg.name
   service_url         = module.product_function.url
 
   policy_file = "${path.module}/policies/product.xml"
+  function_app_name   = module.product_function.function_app_name
+
 }
 
 # Legacy backend (external system)
@@ -41,7 +43,8 @@ module "legacy_api" {
   source              = "./modules/apim-api"
   api_name            = "legacy-product-api"
   path                = "legacy/products"
-  apim_name           = module.apim.name
+  apim_name           = module.apim.apim_name
   resource_group_name = module.rg.name
   service_url         = "https://httpbin.org" # simulate legacy system
+  function_app_name   = module.product_function.function_app_name
 }
