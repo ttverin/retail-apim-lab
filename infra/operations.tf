@@ -38,7 +38,7 @@ resource "azurerm_api_management_api_operation" "legacy_get_products" {
 
   display_name = "Legacy Get Products"
   method       = "GET"
-  url_template = "/products"
+  url_template = "/"
 }
 
 resource "azurerm_api_management_api_operation_policy" "legacy_policy" {
