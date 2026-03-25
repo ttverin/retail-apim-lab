@@ -22,18 +22,18 @@ resource "azurerm_api_management_api" "product_api" {
 resource "azurerm_api_management_api_operation" "get_products" {
   operation_id        = "get-products"
   api_name            = azurerm_api_management_api.product_api.name
-  api_management_name = azurerm_api_management_api.product_api.api_management_name
+  api_management_name = azurerm_api_management.apim.name
   resource_group_name = var.resource_group_name
   display_name = "Get Products"
   method       = "GET"
-  url_template = "/products"
+  url_template = "/"
 }
 
 
 resource "azurerm_api_management_api_operation_policy" "get_products_policy" {
   operation_id        = azurerm_api_management_api_operation.get_products.operation_id
   api_name            = azurerm_api_management_api.product_api.name
-  api_management_name = azurerm_api_management_api.product_api.api_management_name
+  api_management_name = azurerm_api_management.apim.name
   resource_group_name = var.resource_group_name
   xml_content = <<XML
 <policies>
