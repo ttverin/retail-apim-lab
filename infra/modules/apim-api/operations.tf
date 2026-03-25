@@ -3,9 +3,9 @@ resource "azurerm_api_management_api_operation" "get_products" {
   api_name            = azurerm_api_management_api.product_api.name
   api_management_name = var.apim_name
   resource_group_name = var.resource_group_name
-  display_name = "Get Products"
-  method       = "GET"
-  url_template = "/"
+  display_name        = "Get Products"
+  method              = "GET"
+  url_template        = "/"
 }
 
 resource "azurerm_api_management_api_operation_policy" "get_products_policy" {
@@ -13,7 +13,7 @@ resource "azurerm_api_management_api_operation_policy" "get_products_policy" {
   api_name            = azurerm_api_management_api.product_api.name
   api_management_name = var.apim_name
   resource_group_name = var.resource_group_name
-  xml_content = <<XML
+  xml_content         = <<XML
 <policies>
   <inbound>
     <base />

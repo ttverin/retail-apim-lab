@@ -29,10 +29,10 @@ resource "azurerm_linux_function_app" "func" {
   }
 
   app_settings = {
-    FUNCTIONS_WORKER_RUNTIME = "node"
-    APPINSIGHTS_INSTRUMENTATIONKEY = azurerm_application_insights.app_insights.instrumentation_key
+    FUNCTIONS_WORKER_RUNTIME              = "node"
+    APPINSIGHTS_INSTRUMENTATIONKEY        = azurerm_application_insights.app_insights.instrumentation_key
     APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.app_insights.connection_string
-    WEBSITE_RUN_FROM_PACKAGE = "1"
+    WEBSITE_RUN_FROM_PACKAGE              = "1"
   }
 }
 

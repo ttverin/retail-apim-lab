@@ -33,8 +33,8 @@ module "product_api" {
   resource_group_name = module.rg.name
   service_url         = module.product_function.url
 
-  policy_file = "${path.module}/policies/product.xml"
-  function_app_name   = module.product_function.function_app_name
+  policy_file       = "${path.module}/policies/product.xml"
+  function_app_name = module.product_function.function_app_name
 
 }
 
