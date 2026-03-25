@@ -10,3 +10,7 @@ variable "location" {
   type = string
 }
 
+variable "service_url" {
+  type = string
+}
+
