@@ -7,6 +7,3 @@ variable "service_url" {}
 variable "policy_file" {
   default = ""
 }
-variable "function_app_name" {
-  type = string
-}
