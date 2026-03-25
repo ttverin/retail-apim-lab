@@ -40,7 +40,8 @@ resource "azurerm_api_management_api_operation_policy" "get_products_policy" {
 <policies>
   <inbound>
     <base />
-    <set-backend-service base-url="https://${var.function_app_name}.azurewebsites.net/api" />
+    <rewrite-uri template="/api/productApi" />
+    <set-backend-service base-url="https://${var.function_app_name}.azurewebsites.net" />
   </inbound>
   <backend>
     <base />
