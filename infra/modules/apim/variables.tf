@@ -10,3 +10,10 @@ variable "location" {
   type = string
 }
 
+variable "service_url" {
+  type = string
+}
+
+variable "function_app_name" {
+  type = string
+}
