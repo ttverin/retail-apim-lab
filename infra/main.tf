@@ -20,7 +20,8 @@ module "apim" {
   name                = "apim-retail-${local.suffix}"
   resource_group_name = module.rg.name
   location            = module.rg.location
-  service_url                 = module.product_function.url
+  service_url         = module.product_function.url
+  function_app_name   = module.product_function.function_app_name
 }
 
 # APIM API (modern backend)
