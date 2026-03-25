@@ -12,7 +12,7 @@ resource "azurerm_api_management_api" "api" {
 }
 
 resource "azurerm_api_management_api_policy" "policy" {
-  count               = var.policy_file != "" ? 1 : 0
+  count = var.policy_file != "" ? 1 : 0
 
   api_name            = azurerm_api_management_api.api.name
   api_management_name = var.apim_name
