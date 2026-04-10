@@ -47,10 +47,10 @@ module "legacy_api" {
 
 module "service_bus" {
 
-  source             = "./modules/service-bus"
-  name               = "sb-retail-${local.suffix}"
-  location           = module.rg.location
+  source              = "./modules/service-bus"
+  name                = "sb-retail-${local.suffix}"
+  location            = module.rg.location
   resource_group_name = module.rg.name
-  queue_name         = "product-queue"
-  sku                = "Basic"
+  queue_name          = "product-queue"
+  sku                 = "Basic"
 }

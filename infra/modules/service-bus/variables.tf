@@ -5,7 +5,7 @@ variable "location" {
   type = string
 }
 variable "sku" {
-  type = string
+  type    = string
   default = "Free"
 }
 variable "resource_group_name" {
