@@ -54,6 +54,10 @@ app.serviceBusQueue("productQueueProcessor", {
     connection: "SERVICEBUS_CONNECTION",
     queueName: "%SERVICEBUS_QUEUE_NAME%",
     handler: async (message, context) => {
+        if (message?.forceFail) {
+            context.log("Demo poison message received, forcing retry/dead-letter flow", message);
+            throw new Error("Forced failure for dead-letter demo");
+        }
         context.log("Processing order from queue", message);
     }
 });
