@@ -15,6 +15,7 @@ module "product_function" {
   extra_app_settings = {
     SERVICEBUS_CONNECTION = module.service_bus.primary_connection_string
     SERVICEBUS_QUEUE_NAME = module.service_bus.queue_name
+    SERVICEBUS_DLQ_NAME   = "${module.service_bus.queue_name}/$DeadLetterQueue"
   }
 }
 
@@ -57,4 +58,12 @@ module "service_bus" {
   resource_group_name = module.rg.name
   queue_name          = "product-queue"
   sku                 = "Basic"
+}
+
+module "app_gateway" {
+  source                = "./modules/application-gateway"
+  suffix                = local.suffix
+  location              = module.rg.location
+  resource_group_name   = module.rg.name
+  apim_gateway_hostname = module.apim.gateway_hostname
 }

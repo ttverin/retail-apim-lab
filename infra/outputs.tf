@@ -33,3 +33,12 @@ output "service_bus_queue_name" {
 output "service_bus_queue_id" {
   value = module.service_bus.queue_id
 }
+
+output "app_gateway_name" {
+  value = module.app_gateway.gateway_name
+}
+
+output "app_gateway_public_ip" {
+  value = module.app_gateway.public_ip_address
+}
+
