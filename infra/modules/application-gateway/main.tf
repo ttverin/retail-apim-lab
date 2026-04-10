@@ -48,6 +48,11 @@ resource "azurerm_application_gateway" "appgw" {
     rule_set_version = "3.2"
   }
 
+  ssl_policy {
+    policy_type = "Predefined"
+    policy_name = "AppGwSslPolicy20220101"
+  }
+
   gateway_ip_configuration {
     name      = "appgw-ip-config"
     subnet_id = azurerm_subnet.appgw_subnet.id
