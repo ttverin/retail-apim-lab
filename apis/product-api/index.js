@@ -1,6 +1,30 @@
 const { app } = require("@azure/functions");
 const { ServiceBusClient } = require("@azure/service-bus");
 
+function normalizeMessage(message) {
+    if (typeof message === "string") {
+        try {
+            return JSON.parse(message);
+        } catch {
+            return { rawBody: message };
+        }
+    }
+
+    if (message && typeof message === "object" && typeof message.body === "string") {
+        try {
+            return JSON.parse(message.body);
+        } catch {
+            return message;
+        }
+    }
+
+    if (message && typeof message === "object" && message.body && typeof message.body === "object") {
+        return message.body;
+    }
+
+    return message;
+}
+
 // GET /api/productApi - list products
 app.http("productApi", {
     methods: ["GET"],
@@ -54,11 +78,13 @@ app.serviceBusQueue("productQueueProcessor", {
     connection: "SERVICEBUS_CONNECTION",
     queueName: "%SERVICEBUS_QUEUE_NAME%",
     handler: async (message, context) => {
-        if (message?.forceFail) {
-            context.log("Demo poison message received, forcing retry/dead-letter flow", message);
+        const payload = normalizeMessage(message);
+
+        if (payload?.forceFail) {
+            context.log("Demo poison message received, forcing retry/dead-letter flow", payload);
             throw new Error("Forced failure for dead-letter demo");
         }
-        context.log("Processing order from queue", message);
+        context.log("Processing order from queue", payload);
     }
 });
 
@@ -67,8 +93,9 @@ app.serviceBusQueue("deadLetterMonitor", {
     connection: "SERVICEBUS_CONNECTION",
     queueName: "%SERVICEBUS_DLQ_NAME%",
     handler: async (message, context) => {
+        const payload = normalizeMessage(message);
         context.log("⚠️ Dead-lettered message detected", {
-            message,
+            message: payload,
             deadLetterReason: context.triggerMetadata?.deadLetterReason,
             deadLetterErrorDescription: context.triggerMetadata?.deadLetterErrorDescription
         });
