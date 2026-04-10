@@ -30,22 +30,37 @@ resource "azurerm_subnet" "appgw_subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
+resource "azurerm_web_application_firewall_policy" "waf_policy" {
+  name                = "waf-policy-${var.suffix}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  policy_settings {
+    enabled                     = true
+    mode                        = "Detection" # switch to Prevention to actively block
+    request_body_check          = true
+    max_request_body_size_in_kb = 128
+    file_upload_limit_in_mb     = 100
+  }
+
+  managed_rules {
+    managed_rule_set {
+      type    = "OWASP"
+      version = "3.2"
+    }
+  }
+}
+
 resource "azurerm_application_gateway" "appgw" {
   name                = "appgw-retail-${var.suffix}"
   location            = var.location
   resource_group_name = var.resource_group_name
+  firewall_policy_id  = azurerm_web_application_firewall_policy.waf_policy.id
 
   sku {
     name     = "WAF_v2"
     tier     = "WAF_v2"
     capacity = 1
-  }
-
-  waf_configuration {
-    enabled          = true
-    firewall_mode    = "Detection" # switch to Prevention to actively block
-    rule_set_type    = "OWASP"
-    rule_set_version = "3.2"
   }
 
   ssl_policy {
@@ -98,6 +113,7 @@ resource "azurerm_application_gateway" "appgw" {
     frontend_ip_configuration_name = local.frontend_ip_config_name
     frontend_port_name             = local.frontend_port_name
     protocol                       = "Http"
+    firewall_policy_id             = azurerm_web_application_firewall_policy.waf_policy.id
   }
 
   request_routing_rule {
@@ -109,4 +125,3 @@ resource "azurerm_application_gateway" "appgw" {
     priority                   = 100
   }
 }
-
