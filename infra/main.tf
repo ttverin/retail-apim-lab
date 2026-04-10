@@ -44,3 +44,13 @@ module "legacy_api" {
   resource_group_name = module.rg.name
   service_url         = "https://httpbin.org" # simulate legacy system
 }
+
+module "service_bus" {
+
+  source             = "./modules/service-bus"
+  name               = "sb-retail-${local.suffix}"
+  location           = module.rg.location
+  resource_group_name = module.rg.name
+  queue_name         = "product-queue"
+  sku                = "Basic"
+}
