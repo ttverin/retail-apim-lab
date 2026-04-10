@@ -94,10 +94,26 @@ app.serviceBusQueue("deadLetterMonitor", {
     queueName: "%SERVICEBUS_DLQ_NAME%",
     handler: async (message, context) => {
         const payload = normalizeMessage(message);
+
+        // In v4 model, DLQ metadata is in triggerMetadata.messageActions or applicationProperties
+        const meta = context.triggerMetadata ?? {};
+        const deadLetterReason =
+            meta.deadLetterReason ??
+            meta.applicationProperties?.["DeadLetterReason"] ??
+            meta.userProperties?.["DeadLetterReason"] ??
+            "MaxDeliveryCountExceeded"; // default when retries exhausted
+
+        const deadLetterDescription =
+            meta.deadLetterErrorDescription ??
+            meta.applicationProperties?.["DeadLetterErrorDescription"] ??
+            meta.userProperties?.["DeadLetterErrorDescription"];
+
         context.log("⚠️ Dead-lettered message detected", {
             message: payload,
-            deadLetterReason: context.triggerMetadata?.deadLetterReason,
-            deadLetterErrorDescription: context.triggerMetadata?.deadLetterErrorDescription
+            deadLetterReason,
+            deadLetterErrorDescription: deadLetterDescription,
+            deliveryCount: meta.deliveryCount,
+            enqueuedTime: meta.enqueuedTimeUtc,
         });
     }
 });
