@@ -11,7 +11,7 @@ resource "azurerm_servicebus_queue" "queue" {
 }
 
 resource "azurerm_servicebus_namespace_authorization_rule" "auth_rule" {
-  name         = "RootManageSharedAccessKey"
+  name         = "func-app-access"
   namespace_id = azurerm_servicebus_namespace.sb.id
   listen       = true
   send         = true

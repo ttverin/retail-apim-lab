@@ -14,3 +14,8 @@ variable "suffix" {
   type = string
 }
 
+variable "extra_app_settings" {
+  type    = map(string)
+  default = {}
+}
+

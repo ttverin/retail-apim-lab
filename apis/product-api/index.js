@@ -18,3 +18,12 @@ app.http("productApi", {
         };
     }
 });
+
+app.serviceBusQueue("productQueueProcessor", {
+    connection: "SERVICEBUS_CONNECTION",
+    queueName: "%SERVICEBUS_QUEUE_NAME%",
+    handler: async (message, context) => {
+        context.log("Service Bus message received", message);
+    }
+});
+

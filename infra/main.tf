@@ -12,6 +12,10 @@ module "product_function" {
   resource_group_name = module.rg.name
   location            = module.rg.location
   suffix              = local.suffix
+  extra_app_settings = {
+    SERVICEBUS_CONNECTION = module.service_bus.primary_connection_string
+    SERVICEBUS_QUEUE_NAME = module.service_bus.queue_name
+  }
 }
 
 # APIM
