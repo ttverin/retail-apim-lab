@@ -6,8 +6,9 @@ resource "azurerm_servicebus_namespace" "sb" {
 }
 
 resource "azurerm_servicebus_queue" "queue" {
-  name         = var.queue_name
-  namespace_id = azurerm_servicebus_namespace.sb.id
+  name               = var.queue_name
+  namespace_id       = azurerm_servicebus_namespace.sb.id
+  max_delivery_count = 3 # after 3 failed deliveries, message goes to dead-letter queue
 }
 
 resource "azurerm_servicebus_namespace_authorization_rule" "auth_rule" {
