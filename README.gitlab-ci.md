@@ -29,6 +29,21 @@ Defined in `.gitlab/ci/function-deploy.yml`:
 
 Set these in **Settings -> CI/CD -> Variables**.
 
+### Variable Matrix
+
+| Variable | Required | Used by | Example |
+| --- | --- | --- | --- |
+| `AZURE_CLIENT_ID` | Yes | `function_deploy` | `00000000-0000-0000-0000-000000000000` |
+| `AZURE_CLIENT_SECRET` | Yes | `function_deploy` | `***` |
+| `AZURE_TENANT_ID` | Yes | `function_deploy` | `11111111-1111-1111-1111-111111111111` |
+| `AZURE_SUBSCRIPTION_ID` | Yes | `function_deploy` | `22222222-2222-2222-2222-222222222222` |
+| `AZURE_RESOURCE_GROUP` | Yes | `function_deploy` | `rg-retail-apim-lab` |
+| `FUNCTION_APP_NAME` | Recommended | `function_deploy` | `func-product-ddxp7` |
+| `ARM_CLIENT_ID` | Yes | `terraform_validate`, `terraform_plan`, `terraform_apply` | same as `AZURE_CLIENT_ID` |
+| `ARM_CLIENT_SECRET` | Yes | `terraform_validate`, `terraform_plan`, `terraform_apply` | same as `AZURE_CLIENT_SECRET` |
+| `ARM_TENANT_ID` | Yes | `terraform_validate`, `terraform_plan`, `terraform_apply` | same as `AZURE_TENANT_ID` |
+| `ARM_SUBSCRIPTION_ID` | Yes | `terraform_validate`, `terraform_plan`, `terraform_apply` | same as `AZURE_SUBSCRIPTION_ID` |
+
 ### Azure auth (used by function deploy)
 - `AZURE_CLIENT_ID`
 - `AZURE_CLIENT_SECRET`
@@ -67,4 +82,3 @@ From current `rules`:
 - Add `when: manual` for `terraform_apply`.
 - Add path-based rules so function jobs run only when `apis/product-api/**` changes.
 - Add separate variables/environments for `dev` and `prod`.
-
