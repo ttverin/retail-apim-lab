@@ -1,0 +1,46 @@
+variables:
+  FUNCTION_WORKING_DIR: apis/product-api
+
+function_package:
+  stage: function_package
+  image: node:18
+  script:
+    - cd "$FUNCTION_WORKING_DIR"
+    - rm -rf node_modules
+    - npm install --production
+    - zip -r "$CI_PROJECT_DIR/function.zip" .
+  artifacts:
+    paths:
+      - function.zip
+    expire_in: 7 days
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"'
+
+function_deploy:
+  stage: function_deploy
+  image: mcr.microsoft.com/azure-cli:2.61.0
+  needs: ["function_package"]
+  script:
+    - |
+      az login --service-principal \
+        --username "$AZURE_CLIENT_ID" \
+        --password "$AZURE_CLIENT_SECRET" \
+        --tenant "$AZURE_TENANT_ID"
+    - az account set --subscription "$AZURE_SUBSCRIPTION_ID"
+    - |
+      if [ -z "$FUNCTION_APP_NAME" ]; then
+        FUNCTION_APP_NAME=$(az functionapp list --resource-group "$AZURE_RESOURCE_GROUP" --query "[0].name" -o tsv)
+      fi
+      if [ -z "$FUNCTION_APP_NAME" ]; then
+        echo "FUNCTION_APP_NAME is empty. Set it in GitLab CI/CD variables."
+        exit 1
+      fi
+      az functionapp deployment source config-zip \
+        --resource-group "$AZURE_RESOURCE_GROUP" \
+        --name "$FUNCTION_APP_NAME" \
+        --src function.zip
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"'
+

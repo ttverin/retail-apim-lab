@@ -7,7 +7,7 @@
 Your function app had conflicting v3 and v4 Azure Functions models:
 - `index.js` uses modern v4 model (`@azure/functions` with `app.http()`)
 - `productFunction/function.json` used legacy v3 model with explicit bindings
-- Azure runtime couldn't reconcile both → treated package as malformed
+- Azure runtime couldn't reconcile both -> treated package as malformed
 
 ## Fixes Applied
 
@@ -26,48 +26,30 @@ Your function app had conflicting v3 and v4 Azure Functions models:
 ### 4. Current Correct Structure
 ```
 apis/product-api/
-├── host.json                 ← Root config for v4 model
-├── local.settings.json       ← Local dev settings
-├── package.json              ← Dependencies (@azure/functions v4)
-└── productFunction/
-    └── index.js              ← Function code with app.http()
+|- host.json                 <- Root config for v4 model
+|- local.settings.json       <- Local dev settings
+|- package.json              <- Dependencies (@azure/functions v4)
+`- productFunction/
+   `- index.js               <- Function code with app.http()
 ```
 
-## Deployment Workflow Issue ⚠️
+## CI/CD Pipeline Notes (GitHub + GitLab)
 
-Your GitHub Actions workflow hardcodes the function app name:
-```yaml
-app-name: func-product-pj8x7
-```
+The function app name should not be hardcoded if your infrastructure name includes a random/dynamic suffix.
 
-But your Terraform generates names **dynamically**:
-- `func-product-{randomsuffix}` from `func-${var.name}-${local.suffix}`
-- Suffix changes every `terraform apply`
+### Recommended approaches
+1. Set and use a fixed CI variable (recommended):
+   - GitHub: use a secret/env such as `FUNCTION_APP_NAME`
+   - GitLab: set `FUNCTION_APP_NAME` in CI/CD Variables
+2. Use a fixed suffix in Terraform (deterministic naming).
+3. Query the deployed function app at runtime using Azure CLI before deploy.
 
-### Solution
-Either:
-1. **Update workflow to use parameterized name** (recommended):
-   ```yaml
-   env:
-     FUNCTION_APP_NAME: func-product-${{ secrets.RESOURCE_SUFFIX }}
-   ```
-   Then pass `RESOURCE_SUFFIX` from Terraform outputs via secrets.
-
-2. **Use fixed suffix in Terraform**:
-   ```terraform
-   variable "suffix" {
-     default = "pj8x7"  # Fixed, not random
-   }
-   ```
-
-3. **Query deployed function app at runtime**:
-   - Use Azure CLI to find function app by resource group before deploying
+## Documentation Links
+- Project overview: `README.md`
+- GitLab CI setup and variables: `README.gitlab-ci.md`
 
 ## Next Steps
-1. Run `terraform apply` to deploy infrastructure with the corrected suffix logic
-2. Capture the actual `func-product-{suffix}` name from outputs
-3. Update workflow `app-name` or add dynamic lookup
-4. Re-run GitHub Actions workflow
-
-The function code itself is now correct for v4 model deployment.
-
+1. Verify Terraform outputs contain expected names (`function_app_name`, etc.)
+2. Confirm CI variables are set for your chosen platform
+3. Re-run pipeline and validate Function App deployment logs
+4. Run a quick function invocation smoke test

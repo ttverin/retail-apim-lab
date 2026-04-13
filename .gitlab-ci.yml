@@ -1,0 +1,11 @@
+include:
+  - local: '.gitlab/ci/terraform.yml'
+  - local: '.gitlab/ci/function-deploy.yml'
+
+stages:
+  - terraform_validate
+  - terraform_plan
+  - terraform_apply
+  - function_package
+  - function_deploy
+

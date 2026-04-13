@@ -1,0 +1,45 @@
+variables:
+  TF_WORKING_DIR: infra
+  TF_IN_AUTOMATION: "true"
+
+terraform_validate:
+  stage: terraform_validate
+  image: hashicorp/terraform:1.8.5
+  script:
+    - cd "$TF_WORKING_DIR"
+    - terraform init -input=false
+    - terraform fmt -check -recursive
+    - terraform validate
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+terraform_plan:
+  stage: terraform_plan
+  image: hashicorp/terraform:1.8.5
+  needs: ["terraform_validate"]
+  script:
+    - cd "$TF_WORKING_DIR"
+    - terraform init -input=false
+    - terraform plan -out=tfplan
+  artifacts:
+    paths:
+      - infra/tfplan
+    expire_in: 7 days
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+
+terraform_apply:
+  stage: terraform_apply
+  image: hashicorp/terraform:1.8.5
+  needs: ["terraform_plan"]
+  script:
+    - cd "$TF_WORKING_DIR"
+    - terraform init -input=false
+    - terraform apply -auto-approve tfplan
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" && $CI_PIPELINE_SOURCE == "push"'
+
